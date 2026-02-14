@@ -57,14 +57,17 @@ function populateMarquee() {
     if (!container) return;
 
     const texts = siteData.settings.marqueeTexts || [];
-    // Build two copies for seamless looping
-    let html = '';
-    for (let i = 0; i < 2; i++) {
-        texts.forEach(t => {
-            html += `<span class="font-heading font-bold text-2xl uppercase mx-8">${t}</span>`;
-        });
-    }
-    container.innerHTML = html;
+    if (texts.length === 0) return;
+
+    // Build a single set of items
+    const items = texts.map(t =>
+        `<span class="font-heading font-bold text-2xl uppercase mx-8">${t}</span>`
+    ).join('');
+
+    // Two identical .marquee-set blocks → each fills viewport, scroll -50% loops perfectly
+    container.innerHTML =
+        `<div class="marquee-set">${items}</div>` +
+        `<div class="marquee-set">${items}</div>`;
 }
 
 // --- SITE IMAGES ---
