@@ -4,7 +4,7 @@
       "code": "USD",
       "symbol": "$"
     },
-    "cartMode": "social",
+    "cartMode": "coming_soon",
     "socialPlatform": "instagram",
     "marqueeTexts": [
       "NEW DROPS FRIDAY",
@@ -37,7 +37,7 @@
     {
       "id": 1,
       "name": "Cyber Punk Oversized Hoodie",
-      "price": 85.00,
+      "price": 85,
       "category": "hoodie",
       "image": "https://images.unsplash.com/photo-1578768079052-aa76e52ff62e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
       "backImage": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
@@ -53,7 +53,7 @@
     {
       "id": 2,
       "name": "Raw Distressed Tee - Black",
-      "price": 45.00,
+      "price": 45,
       "category": "t-shirt",
       "image": "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
       "backImage": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
@@ -69,7 +69,7 @@
     {
       "id": 3,
       "name": "Acid Wash Boxy Hoodie",
-      "price": 90.00,
+      "price": 90,
       "category": "hoodie",
       "image": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
       "backImage": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
@@ -85,7 +85,7 @@
     {
       "id": 4,
       "name": "Urban Graphic Tee - White",
-      "price": 40.00,
+      "price": 40,
       "category": "t-shirt",
       "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
       "backImage": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
@@ -101,7 +101,7 @@
     {
       "id": 5,
       "name": "Tech Fleece Jogger",
-      "price": 75.00,
+      "price": 75,
       "category": "bottoms",
       "image": "https://images.unsplash.com/photo-1552160753-117159d7419d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
       "backImage": "https://images.unsplash.com/photo-1552160753-117159d7419d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
@@ -117,7 +117,7 @@
     {
       "id": 6,
       "name": "Neon Accent Beanie",
-      "price": 30.00,
+      "price": 30,
       "category": "accessories",
       "image": "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
       "backImage": "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
