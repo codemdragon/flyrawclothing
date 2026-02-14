@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Flyraw</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { brand: { black: '#121212', dark: '#1a1a1a', lime: '#bef264', grey: '#888888', white: '#ffffff' } },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Oswald', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Oswald:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .admin-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            color: #fff;
+            font-size: 0.875rem;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+
+        .admin-input:focus {
+            outline: none;
+            border-color: #bef264;
+        }
+
+        .admin-input::placeholder {
+            color: #666;
+        }
+
+        select.admin-input {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        select.admin-input option {
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+
+        textarea.admin-input {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .admin-card {
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+        }
+
+        .admin-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-btn {
+            padding: 0.75rem 2rem;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .admin-btn-primary {
+            background: #bef264;
+            color: #121212;
+        }
+
+        .admin-btn-primary:hover {
+            background: #fff;
+        }
+
+        .admin-btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-btn-secondary:hover {
+            border-color: #bef264;
+        }
+
+        .radio-card {
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-card:has(input:checked) {
+            border-color: #bef264;
+            background: rgba(190, 242, 100, 0.05);
+        }
+
+        .upload-dropzone {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .upload-dropzone.border-brand-lime {
+            background: rgba(190, 242, 100, 0.05) !important;
+            border-color: #bef264 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-brand-black text-brand-white font-sans min-h-screen">
+
+    <!-- ===== AUTH SCREEN ===== -->
+    <div id="auth-screen" class="admin-screen flex items-center justify-center min-h-screen px-4">
+        <div class="max-w-md w-full text-center">
+            <h1 class="font-heading text-5xl font-bold uppercase italic mb-2">FLYRAW<span
+                    class="text-brand-lime">.</span></h1>
+            <p class="text-brand-grey text-sm mb-10 uppercase tracking-widest">Admin Panel</p>
+
+            <div class="admin-card text-left space-y-6">
+                <div>
+                    <label class="admin-label">GitHub Personal Access Token</label>
+                    <input type="password" id="token-input" class="admin-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                </div>
+                <p class="text-xs text-brand-grey">
+                    Create a <a href="https://github.com/settings/tokens?type=beta" target="_blank"
+                        class="text-brand-lime underline">fine-grained token</a> with <strong>Contents: Read &
+                        Write</strong> access to <code class="text-brand-lime">codemdragon/flyrawclothing</code>.
+                </p>
+                <button onclick="loginWithToken()" class="admin-btn admin-btn-primary w-full text-lg">Connect</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== DASHBOARD SCREEN ===== -->
+    <div id="dashboard-screen" class="admin-screen hidden">
+        <div class="flex min-h-screen">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-brand-dark border-r border-white/10 flex flex-col flex-shrink-0 fixed h-full z-20">
+                <div class="p-6 border-b border-white/10">
+                    <h1 class="font-heading text-2xl font-bold uppercase italic">FLYRAW<span
+                            class="text-brand-lime">.</span></h1>
+                    <p class="text-brand-grey text-xs uppercase tracking-widest mt-1">CMS</p>
+                </div>
+                <nav class="flex-1 p-4 space-y-1">
+                    <button data-tab="dashboard" onclick="switchTab('dashboard')"
+                        class="tab-btn w-full text-left px-4 py-3 rounded-lg text-sm font-bold uppercase tracking-wider bg-brand-lime text-black transition-colors flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="7" height="9" rx="1" />
+                            <rect x="14" y="3" width="7" height="5" rx="1" />
+                            <rect x="14" y="12" width="7" height="9" rx="1" />
+                            <rect x="3" y="16" width="7" height="5" rx="1" />
+                        </svg>
+                        Dashboard
+                    </button>
+                    <button data-tab="products" onclick="switchTab('products')"
+                        class="tab-btn w-full text-left px-4 py-3 rounded-lg text-sm font-bold uppercase tracking-wider text-brand-grey hover:text-white transition-colors flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                        </svg>
+                        Products
+                    </button>
+                    <button data-tab="settings" onclick="switchTab('settings')"
+                        class="tab-btn w-full text-left px-4 py-3 rounded-lg text-sm font-bold uppercase tracking-wider text-brand-grey hover:text-white transition-colors flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                        Settings
+                    </button>
+                    <button data-tab="contacts" onclick="switchTab('contacts')"
+                        class="tab-btn w-full text-left px-4 py-3 rounded-lg text-sm font-bold uppercase tracking-wider text-brand-grey hover:text-white transition-colors flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path
+                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                        </svg>
+                        Contacts
+                    </button>
+                    <button data-tab="content" onclick="switchTab('content')"
+                        class="tab-btn w-full text-left px-4 py-3 rounded-lg text-sm font-bold uppercase tracking-wider text-brand-grey hover:text-white transition-colors flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                        Content
+                    </button>
+                </nav>
+                <div class="p-4 border-t border-white/10">
+                    <button onclick="logout()"
+                        class="w-full text-left px-4 py-3 rounded-lg text-sm font-bold uppercase tracking-wider text-red-400 hover:bg-red-500/10 transition-colors flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        Logout
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="ml-64 flex-1 p-8">
+
+                <!-- DASHBOARD TAB -->
+                <div id="tab-dashboard" class="tab-content">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="font-heading text-3xl font-bold uppercase">Dashboard</h2>
+                        <div class="relative w-64">
+                            <input type="text" placeholder="Search products..." oninput="handleSearch(event)"
+                                class="admin-input pl-10 rounded-full bg-brand-dark border-white/10 hover:border-brand-lime focus:border-brand-lime transition-colors">
+                            <svg class="w-4 h-4 text-brand-grey absolute left-4 top-1/2 -translate-y-1/2" fill="none"
+                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="admin-card">
+                            <p class="text-brand-grey text-xs uppercase tracking-widest mb-2">Products</p>
+                            <p id="stat-products" class="font-heading text-3xl font-bold text-brand-lime">0</p>
+                        </div>
+                        <div class="admin-card">
+                            <p class="text-brand-grey text-xs uppercase tracking-widest mb-2">Currency</p>
+                            <p id="stat-currency" class="font-heading text-3xl font-bold">USD ($)</p>
+                        </div>
+                        <div class="admin-card">
+                            <p class="text-brand-grey text-xs uppercase tracking-widest mb-2">Cart Mode</p>
+                            <p id="stat-cartmode" class="font-heading text-xl font-bold">📱 Social</p>
+                        </div>
+                        <div class="admin-card">
+                            <p class="text-brand-grey text-xs uppercase tracking-widest mb-2">Checkout Via</p>
+                            <p id="stat-platform" class="font-heading text-xl font-bold">Instagram</p>
+                        </div>
+                    </div>
+                    <div class="admin-card">
+                        <h3 class="font-heading font-bold uppercase text-sm text-brand-grey mb-4">Quick Actions</h3>
+                        <div class="flex gap-4 flex-wrap">
+                            <button onclick="switchTab('products'); setTimeout(()=>openProductModal(-1), 100)"
+                                class="admin-btn admin-btn-primary">+ Add Product</button>
+                            <button onclick="switchTab('settings')" class="admin-btn admin-btn-secondary">⚙️
+                                Settings</button>
+                            <a href="index.html" target="_blank" class="admin-btn admin-btn-secondary">🔗 View Site</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRODUCTS TAB -->
+                <div id="tab-products" class="tab-content hidden">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="font-heading text-3xl font-bold uppercase">Products</h2>
+                        <button onclick="openProductModal(-1)" class="admin-btn admin-btn-primary">+ Add
+                            Product</button>
+                    </div>
+                    <div id="product-list" class="space-y-3"></div>
+                </div>
+
+                <!-- SETTINGS TAB -->
+                <div id="tab-settings" class="tab-content hidden">
+                    <h2 class="font-heading text-3xl font-bold uppercase mb-8">Settings</h2>
+                    <div class="space-y-8 max-w-2xl">
+                        <!-- Currency -->
+                        <div class="admin-card">
+                            <label class="admin-label">Currency</label>
+                            <select id="s-currency" class="admin-input"></select>
+                        </div>
+
+                        <!-- Cart Mode -->
+                        <div class="admin-card">
+                            <label class="admin-label mb-4 block">Cart / Checkout Mode</label>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <label class="radio-card">
+                                    <input type="radio" name="cartMode" value="social" class="sr-only">
+                                    <p class="font-heading font-bold uppercase text-sm mb-1">📱 Social (DM)</p>
+                                    <p class="text-xs text-brand-grey">Copy order & redirect to Instagram or WhatsApp DM
+                                    </p>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="cartMode" value="gateway" class="sr-only">
+                                    <p class="font-heading font-bold uppercase text-sm mb-1">💳 Payment Gateway</p>
+                                    <p class="text-xs text-brand-grey">Template for Stripe / PayPal integration</p>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="cartMode" value="coming_soon" class="sr-only">
+                                    <p class="font-heading font-bold uppercase text-sm mb-1">🚧 Coming Soon</p>
+                                    <p class="text-xs text-brand-grey">Show "coming soon" on checkout</p>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Social Platform -->
+                        <div class="admin-card">
+                            <label class="admin-label mb-4 block">Social Checkout Platform</label>
+                            <div class="flex gap-4">
+                                <label class="radio-card flex-1 flex items-center gap-3">
+                                    <input type="radio" name="socialPlatform" value="instagram" class="sr-only">
+                                    <span class="font-heading font-bold uppercase text-sm">📸 Instagram</span>
+                                </label>
+                                <label class="radio-card flex-1 flex items-center gap-3">
+                                    <input type="radio" name="socialPlatform" value="whatsapp" class="sr-only">
+                                    <span class="font-heading font-bold uppercase text-sm">💬 WhatsApp</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Product Categories -->
+                        <div class="admin-card">
+                            <label class="admin-label mb-2 block">Product Categories</label>
+                            <p class="text-xs text-brand-grey mb-4">Manage the tags available for your products.</p>
+
+                            <div class="flex gap-2 mb-4">
+                                <input id="s-new-category" class="admin-input"
+                                    placeholder="New category name (e.g. 'Hats')">
+                                <button onclick="addCategory()" class="admin-btn admin-btn-secondary px-4">+</button>
+                            </div>
+
+                            <div id="s-categories-list" class="flex flex-wrap gap-2">
+                                <!-- Populated by admin.js -->
+                            </div>
+                        </div>
+                        <button onclick="saveSettings()" class="admin-btn admin-btn-primary">Save Settings</button>
+                    </div>
+                </div>
+
+                <!-- CONTACTS TAB -->
+                <div id="tab-contacts" class="tab-content hidden">
+                    <h2 class="font-heading text-3xl font-bold uppercase mb-8">Contacts</h2>
+                    <div class="admin-card max-w-2xl space-y-6">
+                        <p class="text-brand-grey text-sm">Update once — these propagate to the sidebar, footer, and
+                            checkout across every page.</p>
+                        <div>
+                            <label class="admin-label">Instagram Handle</label>
+                            <input id="c-instagram" class="admin-input" placeholder="@flyrawclothing">
+                        </div>
+                        <div>
+                            <label class="admin-label">WhatsApp Number</label>
+                            <input id="c-whatsapp" class="admin-input" placeholder="+1234567890 (with country code)">
+                        </div>
+                        <div>
+                            <label class="admin-label">Facebook Page URL</label>
+                            <input id="c-facebook" class="admin-input"
+                                placeholder="https://facebook.com/flyrawclothing">
+                        </div>
+                        <div>
+                            <label class="admin-label">Email</label>
+                            <input id="c-email" class="admin-input" placeholder="hello@flyraw.com">
+                        </div>
+                        <button onclick="saveContacts()" class="admin-btn admin-btn-primary">Save Contacts</button>
+                    </div>
+                </div>
+
+                <!-- CONTENT TAB -->
+                <div id="tab-content" class="tab-content hidden">
+                    <h2 class="font-heading text-3xl font-bold uppercase mb-8">Content</h2>
+                    <div class="space-y-8 max-w-2xl">
+                        <div class="admin-card">
+                            <label class="admin-label">Marquee / Banner Texts</label>
+                            <p class="text-xs text-brand-grey mb-3">One text per line. These scroll across the lime
+                                green banner.</p>
+                            <textarea id="ct-marquee" class="admin-input" rows="4"
+                                placeholder="NEW DROPS FRIDAY&#10;FREE SHIPPING OVER $150&#10;WORLDWIDE SHIPPING"></textarea>
+                        </div>
+                        <div class="admin-card">
+                            <label class="admin-label">Hero Tagline</label>
+                            <input id="ct-tagline" class="admin-input" placeholder="Define Your Raw">
+                        </div>
+                        <div class="admin-card">
+                            <label class="admin-label">Hero Subtext</label>
+                            <input id="ct-subtext" class="admin-input"
+                                placeholder="Streetwear reimagined for the generation that never sleeps.">
+                        </div>
+
+                        <!-- SITE IMAGES -->
+                        <div class="border-t border-white/10 pt-8">
+                            <h3 class="font-heading text-xl font-bold uppercase mb-2">Site Images</h3>
+                            <p class="text-brand-grey text-xs mb-6">Upload or paste URLs for the homepage hero, brand
+                                story, and lookbook section images. Any size works — these are auto-resized — but the
+                                recommended sizes give the best quality.</p>
+                            <div id="site-images-container" class="admin-card space-y-6">
+                                <!-- Dynamically populated by admin.js renderContent() -->
+                            </div>
+                        </div>
+
+                        <button onclick="saveContent()" class="admin-btn admin-btn-primary">Save Content</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PRODUCT MODAL ===== -->
+    <div id="product-modal"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div
+            class="bg-brand-dark border border-white/10 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 space-y-5">
+            <div class="flex justify-between items-center">
+                <h3 id="modal-title" class="font-heading text-2xl font-bold uppercase">Add Product</h3>
+                <button onclick="closeProductModal()" class="p-2 hover:text-brand-lime transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div>
+                <label class="admin-label">Product Name</label>
+                <input id="p-name" class="admin-input" placeholder="Cyber Punk Oversized Hoodie">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="admin-label">Price</label>
+                    <input id="p-price" type="number" step="0.01" class="admin-input" placeholder="85.00">
+                </div>
+                <div>
+                    <label class="admin-label">Category</label>
+                    <select id="p-category" class="admin-input">
+                        <option value="hoodie">Hoodie</option>
+                        <option value="t-shirt">T-Shirt</option>
+                        <option value="bottoms">Bottoms</option>
+                        <option value="accessories">Accessories</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Product image upload fields — rendered dynamically by openProductModal() -->
+            <div id="product-image-fields" class="space-y-4"></div>
+            <div>
+                <label class="admin-label">Description</label>
+                <textarea id="p-description" class="admin-input" rows="3"
+                    placeholder="Short product description..."></textarea>
+            </div>
+            <div>
+                <label class="admin-label">Materials</label>
+                <input id="p-materials" class="admin-input" placeholder="100% Heavyweight Cotton">
+            </div>
+            <div>
+                <label class="admin-label">Sizes (comma-separated)</label>
+                <input id="p-sizes" class="admin-input" placeholder="S, M, L, XL">
+            </div>
+            <div class="flex gap-4 pt-2">
+                <button onclick="saveProduct()" class="admin-btn admin-btn-primary flex-1">Save Product</button>
+                <button onclick="closeProductModal()" class="admin-btn admin-btn-secondary flex-1">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/admin.js"></script>
+</body>
+
+</html>
