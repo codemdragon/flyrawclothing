@@ -150,7 +150,7 @@
                     </div>
                 </div>
             </div>
-            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 animate-fade-in"></div>
+            <div id="product-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 animate-fade-in"></div>
         </div>
     </main>
 
@@ -307,10 +307,10 @@
                     </div>
                     <div class="flex justify-between items-start">
                         <div>
-                            <h4 class="font-heading font-bold uppercase text-lg group-hover:text-brand-lime transition-colors">${product.name}</h4>
-                            <p class="text-brand-grey text-sm capitalize">${product.category}</p>
+                            <h4 class="font-heading font-bold uppercase text-sm md:text-lg group-hover:text-brand-lime transition-colors leading-tight">${product.name}</h4>
+                            <p class="text-brand-grey text-[10px] md:text-sm capitalize">${product.category}</p>
                         </div>
-                        <span class="font-bold text-brand-white">${formatPrice(product.price)}</span>
+                        <span class="font-bold text-xs md:text-base text-brand-white">${formatPrice(product.price)}</span>
                     </div>
                 </div>
             `).join('');
